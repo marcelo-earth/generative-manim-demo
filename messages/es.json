@@ -4,6 +4,9 @@
     "pageDetailedDescription": "Generative Manim es una herramienta de código abierto para generar videos animados a partir de texto. Construido sobre Manim.",
     "generateVideo": "Generar Video",
     "renderEngine": "Motor de renderizado",
-    "promptGenerator": "Generador de prompts"
+    "promptGenerator": "Generador de prompts",
+    "callToActionTitle": "¿Trabajando en una animación compleja?",
+    "callToActionDescription": "<link>Animo</link> es un editor de video impulsado por LLMs y Manim para crear animaciones complejas más rápido. Procesa imágenes, instrucciones y código. ¿Te animas a probarlo?",
+    "tryAnimo": "Prueba Animo"
   }
 }

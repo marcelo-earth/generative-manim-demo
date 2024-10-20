@@ -3,6 +3,8 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Logo from "@/components/logo.png";
 import Switcher from "@/components/Main";
+import Button from "@/components/Button";
+import TryAnimo from "@/components/TryAnimo";
 
 export default function Home() {
   const t = useTranslations("Index");
@@ -43,6 +45,34 @@ export default function Home() {
                 promptGenerator: t("promptGenerator"),
               }}
             />
+          </section>
+          <section className="max-w-screen-lg mx-auto p-2">
+            <div className="flex flex-row gap-y-2 bg-neutral-50 dark:bg-neutral-900 border dark:border-rose-400 p-6 rounded-lg">
+              <div className="flex flex-col text-left lg:w-9/12">
+                <h2 className="text-xl lg:text-2xl font-bold tracking-tight">
+                  {t("callToActionTitle")}
+                </h2>
+                <p>
+                  {t.rich("callToActionDescription", {
+                    link: (chunks) => (
+                      <a
+                        href="https://animo.video"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline decoration-rose-300 underline-offset-4"
+                      >
+                        {chunks}
+                      </a>
+                    ),
+                  })}
+                </p>
+              </div>
+              <div className="flex lg:w-3/12">
+                <div className="flex justify-end items-center w-full">
+                  <TryAnimo tryAnimoLabel={t("tryAnimo")} />
+                </div>
+              </div>
+            </div>
           </section>
           <section className="text-left max-w-screen-lg mx-auto p-2">
             <h2
@@ -257,6 +287,15 @@ export default function Home() {
                 className="underline decoration-rose-300 underline-offset-4"
               >
                 Generative Manim Community
+              </a>{" "}
+              and{" "}
+              <a
+                href="https://animo.video"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-rose-300 underline-offset-4"
+              >
+                Animo
               </a>
             </p>
           </div>
