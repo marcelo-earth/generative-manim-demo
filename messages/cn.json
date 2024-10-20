@@ -4,6 +4,9 @@
     "pageDetailedDescription": "Generative Manim 是一款开源工具，用于从文本生成动画视频。基于 Manim 库构建。",
     "generateVideo": "生成视频",
     "renderEngine": "渲染引擎",
-    "promptGenerator": "提示生成器"
+    "promptGenerator": "提示生成器",
+    "callToActionTitle": "正在制作复杂动画？",
+    "callToActionDescription": "<link>Animo</link> 是一个由LLM和Manim驱动的视频编辑器，能够更快速地制作复杂动画。它可以处理图像、指令和代码。你想试试吗？",
+    "tryAnimo": "试用 Animo"
   }
 }
