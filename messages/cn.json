@@ -8,5 +8,80 @@
     "callToActionTitle": "正在制作复杂动画？",
     "callToActionDescription": "<link>Animo</link> 是一个由LLM和Manim驱动的视频编辑器，能够更快速地制作复杂动画。它可以处理图像、指令和代码。你想试试吗？",
     "tryAnimo": "试用 Animo"
+  },
+  "Main": {
+    "inputPromptVideo": "输入提示以生成视频",
+    "inputPlaceholder": "画一个红色圆圈并将其变成正方形",
+    "generating": "生成中...",
+    "generate": "生成",
+    "renderFromCode": "从代码渲染视频",
+    "video": "视频",
+    "rendering": "渲染中...",
+    "render": "渲染",
+    "inputCodeRender": "输入代码以渲染视频",
+    "inputPromptCode": "输入提示以生成代码",
+    "copy": "复制",
+    "download": "下载",
+    "modelGroups": {
+      "openai": "OpenAI GPT",
+      "claude": "Claude",
+      "deepseek": "Deepseek"
+    },
+    "feedbackThanks": "我们已记录您的反馈。谢谢！",
+    "models": {
+      "gpt4": "GPT-4o",
+      "gpt35FineTuned": "GPT-3.5 微调版",
+      "gpt35Physics": "物理专用 GPT-3.5 微调版",
+      "claude35": "Claude 3.5 Sonnet",
+      "claude3": "Claude 3 Sonnet",
+      "deepseekR1": "Deepseek R1"
+    }
+  },
+  "Page": {
+    "howItWorks": "工作原理",
+    "makingAccessible": "让视频动画制作对每个人都触手可及。",
+    "toolDescription": "Generative Manim 是一个开源工具，用于从文本生成动画视频。它分为三个部分：",
+    "parts": {
+      "generateVideo": "生成视频：从文本生成视频。",
+      "renderEngine": "渲染引擎：从代码渲染视频。",
+      "promptGenerator": "提示生成器：从文本生成代码。"
+    },
+    "generateVideoExplanation": "生成视频部分是提示生成器和渲染引擎在单个步骤中的总和。",
+    "concept": "概念",
+    "conceptDescription": "想象一下，在未来，你可以在几秒钟内从你脑海中的概念观看动画视频。这对教师、学生等都很有用。想要生成视频的人不需要学习如何使用视频编辑器、如何绘画或如何编码。你只需要写一段描述性文本。",
+    "futureIsNow": "这确实是一个未来。而且这并不遥远。我们已经可以开始努力实现它。",
+    "manimDescription": "Manim 是一个用于创建复杂图形和动画的 Python 库。对于 GPT 来说，Manim 的主要优势在于，由于它是 LLM 的一种语言，从提示生成正确的代码更容易。",
+    "models": "模型",
+    "modelsDescription": "我们用于从文本生成 Manim 代码的模型。",
+    "modelsIntro": "Generative Manim 使用模型从文本生成代码。我们使用的第一个模型是采用零样本学习策略的 GPT-4。今天我们正在使用两个模型。",
+    "modelCards": {
+      "gpt4": {
+        "title": "GPT-4o",
+        "description": "GPT-4o 是 OpenAI 的下一代模型。我们使用基本的系统提示来生成代码。我们添加了一些额外的指令来帮助模型理解任务。"
+      },
+      "gpt35": {
+        "title": "GPT-3.5 微调版",
+        "description": "我们用一些 Manim 代码示例训练了一个 GPT-3.5 模型。该模型经过微调，可以从提示生成 Manim 代码。这个模型比 GPT-4o 稍慢。"
+      },
+      "gpt35Physics": {
+        "title": "物理专用 GPT-3.5 微调版",
+        "description": "为 Manim Physics 插件微调的 GPT-3.5 模型。"
+      }
+    },
+    "contributors": "贡献者",
+    "contributorsDescription": "为项目做出贡献的优秀人员。",
+    "contributorsText": "Generative Manim 是一个开源项目。你可以通过提出新功能、修复错误或改进文档来为项目做出贡献。我们热烈欢迎拉取请求。",
+    "joinDiscord": "记住你也可以加入我们的 Discord 社区，讨论新功能、错误或任何其他话题。",
+    "footer": "由 Generative Manim 社区和 Animo 制作",
+    "contributorLinks": {
+      "discord": "Discord 社区",
+      "manimPhysics": "Manim Physics",
+      "pullRequests": "拉取请求",
+      "contributors": {
+        "marcelo": "Marcelo Arias @360macky",
+        "puiching": "梦归云帆 @Puiching-Memory"
+      }
+    },
+    "haveIdea": "如果你有想法或想帮助我们，请访问我们的"
   }
 }

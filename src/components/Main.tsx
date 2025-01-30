@@ -164,7 +164,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
         model: promptToCodeModel,
       }),
     });
-    alert("We have recorded your feedback. Thank you!");
+    alert(translations?.Main?.feedbackThanks || "We have recorded your feedback. Thank you!");
   };
 
   useEffect(() => {
@@ -219,13 +219,13 @@ const Switcher = ({ translations }: { translations?: any }) => {
           <div className="w-full">
             <form className="w-full mt-4" onSubmit={handleVideoGeneration}>
               <label htmlFor="prompt" className="text-left">
-                Input the prompt to generate a video
+                {translations?.Main?.inputPromptVideo}
               </label>
               <div className="flex flex-col lg:flex-row gap-x-2 gap-y-2 mt-2">
                 <Input
                   id="prompt"
                   type="text"
-                  placeholder="Draw a red circle and transform it into a square"
+                  placeholder={translations?.Main?.inputPlaceholder}
                   className="lg:w-96"
                   value={promptToCode}
                   onChange={(e) => setPromptToCode(e.target.value)}
@@ -236,25 +236,25 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   value={promptToCodeModel}
                   onChange={(e) => setPromptToCodeModel(e.target.value)}
                 >
-                  <optgroup label="OpenAI GPT">
-                    <option value="gpt-4o">GPT-4o</option>
+                  <optgroup label={translations?.Main?.modelGroups?.openai}>
+                    <option value="gpt-4o">{translations?.Main?.models?.gpt4}</option>
                     <option value="ft:gpt-3.5-turbo-1106:astronware:generative-manim-2:9OeVevto">
-                      Fine-tuned GPT-3.5
+                      {translations?.Main?.models?.gpt35FineTuned}
                     </option>
                     <option value="ft:gpt-3.5-turbo-1106:astronware:gm-physics-01:9hr68Zu9">
-                      Physics Fine-tuned GPT-3.5
+                      {translations?.Main?.models?.gpt35Physics}
                     </option>
                   </optgroup>
-                  <optgroup label="Claude">
+                  <optgroup label={translations?.Main?.modelGroups?.claude}>
                     <option value="claude-3-5-sonnet-20240620">
-                      Claude 3.5 Sonnet
+                      {translations?.Main?.models?.claude35}
                     </option>
                     <option value="claude-3-sonnet-20240229">
-                      Claude 3 Sonnet
+                      {translations?.Main?.models?.claude3}
                     </option>
                   </optgroup>
-                  <optgroup label="Deepseek">
-                    <option value="deepseek-r1">Deepseek R1</option>
+                  <optgroup label={translations?.Main?.modelGroups?.deepseek}>
+                    <option value="deepseek-r1">{translations?.Main?.models?.deepseekR1}</option>
                   </optgroup>
                 </Select>
                 <Button
@@ -267,7 +267,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     <WandSparkles />
                   )}
                   <span>
-                    {renderizationLoading ? "Generating..." : "Generate"}
+                    {renderizationLoading 
+                      ? translations?.Main?.generating 
+                      : translations?.Main?.generate}
                   </span>
                 </Button>
               </div>
@@ -423,22 +425,22 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   value={promptToCodeModel}
                   onChange={(e) => setPromptToCodeModel(e.target.value)}
                 >
-                  <optgroup label="OpenAI GPT">
-                    <option value="gpt-4o">GPT-4o</option>
+                  <optgroup label={translations?.Main?.modelGroups?.openai}>
+                    <option value="gpt-4o">{translations?.Main?.models?.gpt4}</option>
                     <option value="ft:gpt-3.5-turbo-1106:astronware:generative-manim-2:9OeVevto">
-                      Fine-tuned GPT-3.5
+                      {translations?.Main?.models?.gpt35FineTuned}
                     </option>
                   </optgroup>
-                  <optgroup label="Claude">
+                  <optgroup label={translations?.Main?.modelGroups?.claude}>
                     <option value="claude-3-5-sonnet-20240620">
-                      Claude 3.5 Sonnet
+                      {translations?.Main?.models?.claude35}
                     </option>
                     <option value="claude-3-sonnet-20240229">
-                      Claude 3 Sonnet
+                      {translations?.Main?.models?.claude3}
                     </option>
                   </optgroup>
-                  <optgroup label="Deepseek">
-                    <option value="deepseek-r1">Deepseek R1</option>
+                  <optgroup label={translations?.Main?.modelGroups?.deepseek}>
+                    <option value="deepseek-r1">{translations?.Main?.models?.deepseekR1}</option>
                   </optgroup>
                 </Select>
                 <Button
@@ -451,7 +453,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     <WandSparkles />
                   )}
                   <span>
-                    {promptToCodeLoading ? "Generating..." : "Generate"}
+                    {promptToCodeLoading 
+                      ? translations?.Main?.generating 
+                      : translations?.Main?.generate}
                   </span>
                 </Button>
               </div>

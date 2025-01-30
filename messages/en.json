@@ -8,5 +8,80 @@
     "callToActionTitle": "Working on a complex animation?",
     "callToActionDescription": "<link>Animo</link> is a video editor powered by LLMs and Manim to create complex animations faster. It processes images, instructions, and code. Are you up for trying it?",
     "tryAnimo": "Try Animo"
+  },
+  "Main": {
+    "inputPromptVideo": "Input the prompt to generate a video",
+    "inputPlaceholder": "Draw a red circle and transform it into a square",
+    "generating": "Generating...",
+    "generate": "Generate",
+    "renderFromCode": "Render a video from code",
+    "video": "Video",
+    "rendering": "Rendering...",
+    "render": "Render",
+    "inputCodeRender": "Input the code to render a video",
+    "inputPromptCode": "Input the prompt to generate code",
+    "copy": "Copy",
+    "download": "Download",
+    "modelGroups": {
+      "openai": "OpenAI GPT",
+      "claude": "Claude",
+      "deepseek": "Deepseek"
+    },
+    "feedbackThanks": "We have recorded your feedback. Thank you!",
+    "models": {
+      "gpt4": "GPT-4o",
+      "gpt35FineTuned": "Fine-tuned GPT-3.5",
+      "gpt35Physics": "Physics Fine-tuned GPT-3.5",
+      "claude35": "Claude 3.5 Sonnet",
+      "claude3": "Claude 3 Sonnet",
+      "deepseekR1": "Deepseek R1"
+    }
+  },
+  "Page": {
+    "howItWorks": "How it works",
+    "makingAccessible": "Making video animations accessible to everyone.",
+    "toolDescription": "Generative Manim is an open-source tool for generating animation videos from text. It is divided in three parts:",
+    "parts": {
+      "generateVideo": "Generate Video: Generate the video from the text.",
+      "renderEngine": "Render Engine: Render the video from the code.",
+      "promptGenerator": "Prompt Generator: Generate the code from the text."
+    },
+    "generateVideoExplanation": "The Generate Video part is the sum of the Prompt Generator and the Render Engine in a single step.",
+    "concept": "Concept",
+    "conceptDescription": "Imagine a future where you can watch an animation video from a concept you have in your mind in a few seconds. That would be useful for teachers, students, and more. People that want to generate a video won't need to learn how to use a video editor, how to draw, or how to code. You just need to write a descriptive text.",
+    "futureIsNow": "That indeed is a future. And it is not that far. We can already start working on it.",
+    "manimDescription": "Manim is a Python library for creating complex graphics and animations. The main advantage of Manim for GPT, it's that since it's a language for the LLM, it's more easy to generate proper code from a prompt.",
+    "models": "Models",
+    "modelsDescription": "The models we use to generate Manim code from text.",
+    "modelsIntro": "Generative Manim uses models to generate code from text. The first model we used was GPT-4 with a Zero Shot Learning strategy. Today we are using two models.",
+    "modelCards": {
+      "gpt4": {
+        "title": "GPT-4o",
+        "description": "GPT-4o is the next-generation model from OpenAI. We use a basic system prompt to generate the code. We add a few extra instructions to help the model understand the task."
+      },
+      "gpt35": {
+        "title": "GPT-3.5 Fine-Tuned",
+        "description": "We trained a GPT-3.5 model with a few examples of Manim code. The model is fine-tuned to generate Manim code from a prompt. This model is a little bit slower than GPT-4o."
+      },
+      "gpt35Physics": {
+        "title": "GPT-3.5 Fine-Tuned for Physics",
+        "description": "A GPT-3.5 model fined-tuned to generate Manim for the Manim Physics plugin."
+      }
+    },
+    "contributors": "Contributors",
+    "contributorsDescription": "Awesome people that are contributing to the project.",
+    "contributorsText": "Generative Manim is an open source project. You can contribute to the project by suggesting new features, fixing bugs, or improving the documentation. Pull Requests are warmly welcome.",
+    "joinDiscord": "Remember you can also join our Discord Community to discuss new features, bugs or any other topic.",
+    "footer": "Made by the Generative Manim Community and Animo",
+    "contributorLinks": {
+      "discord": "Discord Community",
+      "manimPhysics": "Manim Physics",
+      "pullRequests": "Pull Requests",
+      "contributors": {
+        "marcelo": "Marcelo Arias @360macky",
+        "puiching": "梦归云帆 @Puiching-Memory"
+      }
+    },
+    "haveIdea": "If you have an idea or want to help us, go to our"
   }
 }
