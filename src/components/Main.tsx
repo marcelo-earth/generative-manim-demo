@@ -253,6 +253,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
                       Claude 3 Sonnet
                     </option>
                   </optgroup>
+                  <optgroup label="Deepseek">
+                    <option value="deepseek-r1">Deepseek R1</option>
+                  </optgroup>
                 </Select>
                 <Button
                   className="px-4 flex gap-x-2 items-center justify-center"
@@ -433,6 +436,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     <option value="claude-3-sonnet-20240229">
                       Claude 3 Sonnet
                     </option>
+                  </optgroup>
+                  <optgroup label="Deepseek">
+                    <option value="deepseek-r1">Deepseek R1</option>
                   </optgroup>
                 </Select>
                 <Button
