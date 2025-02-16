@@ -1,0 +1,87 @@
+{
+  "Index": {
+    "pageDescription": "GPT pour la génération de vidéos",
+    "pageDetailedDescription": "Generative Manim est un outil open-source pour générer des vidéos d'animation à partir de texte. Basé sur la bibliothèque Manim.",
+    "generateVideo": "Générer une vidéo",
+    "renderEngine": "Moteur de rendu",
+    "promptGenerator": "Générateur d'invites",
+    "callToActionTitle": "Vous travaillez sur une animation complexe ?",
+    "callToActionDescription": "<link>Animo</link> est un éditeur vidéo alimenté par des LLM et Manim pour créer des animations complexes plus rapidement. Il traite les images, les instructions et le code. Voulez-vous l'essayer ?",
+    "tryAnimo": "Essayez Animo"
+  },
+  "Main": {
+    "inputPromptVideo": "Saisissez l'invite pour générer une vidéo",
+    "inputPlaceholder": "Dessinez un cercle rouge et transformez-le en carré",
+    "generating": "Génération...",
+    "generate": "Générer",
+    "renderFromCode": "Rendre une vidéo à partir du code",
+    "video": "Vidéo",
+    "rendering": "Rendu...",
+    "render": "Rendre",
+    "inputCodeRender": "Saisissez le code pour rendre une vidéo",
+    "inputPromptCode": "Saisissez l'invite pour générer du code",
+    "copy": "Copier",
+    "download": "Télécharger",
+    "modelGroups": {
+      "openai": "OpenAI GPT",
+      "claude": "Claude",
+      "deepseek": "Deepseek"
+    },
+    "feedbackThanks": "Nous avons enregistré votre retour. Merci !",
+    "models": {
+      "gpt4": "GPT-4o",
+      "gpt35FineTuned": "GPT-3.5 affiné",
+      "gpt35Physics": "GPT-3.5 affiné pour la physique",
+      "claude35": "Claude 3.5 Sonnet",
+      "claude3": "Claude 3 Sonnet",
+      "deepseekR1": "Deepseek R1"
+    }
+  },
+  "Page": {
+    "howItWorks": "Comment ça marche",
+    "makingAccessible": "Rendre les animations vidéo accessibles à tous.",
+    "toolDescription": "Generative Manim est un outil open-source pour générer des vidéos d'animation à partir de texte. Il est divisé en trois parties :",
+    "parts": {
+      "generateVideo": "Générer une vidéo : Générer la vidéo à partir du texte.",
+      "renderEngine": "Moteur de rendu : Rendre la vidéo à partir du code.",
+      "promptGenerator": "Générateur d'invites : Générer le code à partir du texte."
+    },
+    "generateVideoExplanation": "La partie Générer une vidéo est la somme du Générateur d'invites et du Moteur de rendu en une seule étape.",
+    "concept": "Concept",
+    "conceptDescription": "Imaginez un avenir où vous pouvez regarder une vidéo d'animation basée sur une idée que vous avez en tête en quelques secondes. Cela serait utile pour les enseignants, les étudiants et bien d'autres. Les personnes souhaitant générer une vidéo n'auront pas besoin d'apprendre à utiliser un éditeur vidéo, de dessiner ou de coder. Il suffit d'écrire un texte descriptif.",
+    "futureIsNow": "C'est en effet un avenir, et il n'est pas si lointain. Nous pouvons déjà commencer à y travailler.",
+    "manimDescription": "Manim est une bibliothèque Python pour créer des graphiques et des animations complexes. L'avantage principal de Manim pour GPT est qu'il s'agit d'un langage adapté aux LLM, ce qui facilite la génération de code correct à partir d'une invite.",
+    "models": "Modèles",
+    "modelsDescription": "Les modèles que nous utilisons pour générer du code Manim à partir de texte.",
+    "modelsIntro": "Generative Manim utilise des modèles pour générer du code à partir de texte. Le premier modèle que nous avons utilisé était GPT-4 avec une stratégie Zero Shot Learning. Aujourd'hui, nous utilisons deux modèles.",
+    "modelCards": {
+      "gpt4": {
+        "title": "GPT-4o",
+        "description": "GPT-4o est le modèle de nouvelle génération d'OpenAI. Nous utilisons une invite système de base pour générer le code et ajoutons quelques instructions supplémentaires pour aider le modèle à comprendre la tâche."
+      },
+      "gpt35": {
+        "title": "GPT-3.5 affiné",
+        "description": "Nous avons entraîné un modèle GPT-3.5 avec quelques exemples de code Manim. Le modèle est affiné pour générer du code Manim à partir d'une invite. Ce modèle est un peu plus lent que GPT-4o."
+      },
+      "gpt35Physics": {
+        "title": "GPT-3.5 affiné pour la physique",
+        "description": "Un modèle GPT-3.5 affiné pour générer du code Manim pour le plugin Manim Physics."
+      }
+    },
+    "contributors": "Contributeurs",
+    "contributorsDescription": "Des personnes formidables qui contribuent au projet.",
+    "contributorsText": "Generative Manim est un projet open-source. Vous pouvez contribuer au projet en suggérant de nouvelles fonctionnalités, en corrigeant des bugs ou en améliorant la documentation. Les Pull Requests sont les bienvenues.",
+    "joinDiscord": "N'oubliez pas que vous pouvez aussi rejoindre notre communauté Discord pour discuter des nouvelles fonctionnalités, des bugs ou de tout autre sujet.",
+    "footer": "Créé par la communauté Generative Manim et Animo",
+    "contributorLinks": {
+      "discord": "Communauté Discord",
+      "manimPhysics": "Manim Physics",
+      "pullRequests": "Pull Requests",
+      "contributors": {
+        "marcelo": "Marcelo Arias @360macky",
+        "puiching": "梦归云帆 @Puiching-Memory"
+      }
+    },
+    "haveIdea": "Si vous avez une idée ou souhaitez nous aider, rendez-vous sur"
+  }
+}

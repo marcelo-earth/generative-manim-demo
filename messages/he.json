@@ -1,0 +1,87 @@
+{
+  "Index": {
+    "pageDescription": "GPT ליצירת וידאו",
+    "pageDetailedDescription": "Generative Manim הוא כלי קוד פתוח ליצירת סרטוני אנימציה מטקסט. מבוסס על ספריית Manim.",
+    "generateVideo": "צור וידאו",
+    "renderEngine": "מנוע רינדור",
+    "promptGenerator": "מחולל פקודות",
+    "callToActionTitle": "עובד על אנימציה מורכבת?",
+    "callToActionDescription": "<link>Animo</link> הוא עורך וידאו מבוסס LLM ו-Manim ליצירת אנימציות מורכבות מהר יותר. הוא מעבד תמונות, הוראות וקוד. רוצה לנסות?",
+    "tryAnimo": "נסה את Animo"
+  },
+  "Main": {
+    "inputPromptVideo": "הכנס פקודה ליצירת וידאו",
+    "inputPlaceholder": "צייר עיגול אדום והפוך אותו לריבוע",
+    "generating": "מייצר...",
+    "generate": "צור",
+    "renderFromCode": "רנדר וידאו מקוד",
+    "video": "וידאו",
+    "rendering": "מרנדר...",
+    "render": "רנדר",
+    "inputCodeRender": "הזן קוד לרינדור וידאו",
+    "inputPromptCode": "הזן פקודה ליצירת קוד",
+    "copy": "העתק",
+    "download": "הורד",
+    "modelGroups": {
+      "openai": "OpenAI GPT",
+      "claude": "Claude",
+      "deepseek": "Deepseek"
+    },
+    "feedbackThanks": "תודה! המשוב שלך נרשם.",
+    "models": {
+      "gpt4": "GPT-4o",
+      "gpt35FineTuned": "GPT-3.5 מותאם אישית",
+      "gpt35Physics": "GPT-3.5 מותאם לפיזיקה",
+      "claude35": "Claude 3.5 Sonnet",
+      "claude3": "Claude 3 Sonnet",
+      "deepseekR1": "Deepseek R1"
+    }
+  },
+  "Page": {
+    "howItWorks": "איך זה עובד",
+    "makingAccessible": "הופכים אנימציות וידאו לנגישות לכולם.",
+    "toolDescription": "Generative Manim הוא כלי קוד פתוח ליצירת סרטוני אנימציה מטקסט. הוא מחולק לשלושה חלקים:",
+    "parts": {
+      "generateVideo": "צור וידאו: צור את הווידאו מהטקסט.",
+      "renderEngine": "מנוע רינדור: רנדר את הווידאו מהקוד.",
+      "promptGenerator": "מחולל פקודות: צור קוד מהטקסט."
+    },
+    "generateVideoExplanation": "החלק של יצירת וידאו הוא השילוב של מחולל הפקודות ומנוע הרינדור בשלב אחד.",
+    "concept": "קונספט",
+    "conceptDescription": "דמיין עתיד שבו ניתן לצפות בסרטון אנימציה המבוסס על רעיון שיש לך בראש תוך שניות. זה יהיה שימושי למורים, תלמידים ועוד. אנשים שרוצים ליצור וידאו לא יצטרכו ללמוד להשתמש בעורך וידאו, לצייר או לקודד. כל מה שצריך הוא לכתוב טקסט תיאורי.",
+    "futureIsNow": "זה העתיד, והוא לא כל כך רחוק. כבר אפשר להתחיל לעבוד על זה.",
+    "manimDescription": "Manim היא ספריית פייתון ליצירת גרפיקה ואנימציות מורכבות. היתרון המרכזי של Manim עבור GPT הוא שהיא שפה נוחה ל-LLM, ולכן קל יותר לייצר קוד מתאים מהפקודות.",
+    "models": "מודלים",
+    "modelsDescription": "המודלים שבהם אנו משתמשים כדי לייצר קוד Manim מטקסט.",
+    "modelsIntro": "Generative Manim משתמש במודלים ליצירת קוד מטקסט. המודל הראשון ששימש אותנו היה GPT-4 עם אסטרטגיית Zero Shot Learning. כיום אנו משתמשים בשני מודלים.",
+    "modelCards": {
+      "gpt4": {
+        "title": "GPT-4o",
+        "description": "GPT-4o הוא הדור הבא של OpenAI. אנו משתמשים בהנחיית מערכת בסיסית ליצירת הקוד ומוסיפים הוראות נוספות כדי לעזור למודל להבין את המשימה."
+      },
+      "gpt35": {
+        "title": "GPT-3.5 מותאם אישית",
+        "description": "אימנו את מודל GPT-3.5 עם דוגמאות של קוד Manim. המודל מותאם במיוחד ליצירת קוד Manim מתוך פקודות. המודל הזה מעט איטי יותר מ-GPT-4o."
+      },
+      "gpt35Physics": {
+        "title": "GPT-3.5 מותאם לפיזיקה",
+        "description": "מודל GPT-3.5 מותאם אישית ליצירת קוד Manim עבור תוסף Manim Physics."
+      }
+    },
+    "contributors": "תורמים",
+    "contributorsDescription": "אנשים מדהימים שתורמים לפרויקט.",
+    "contributorsText": "Generative Manim הוא פרויקט קוד פתוח. ניתן לתרום לפרויקט על ידי הצעת תכונות חדשות, תיקון באגים או שיפור התיעוד. תרומות (Pull Requests) יתקבלו בברכה.",
+    "joinDiscord": "זכור שניתן גם להצטרף לקהילת הדיסקורד שלנו כדי לדון על תכונות חדשות, באגים או כל נושא אחר.",
+    "footer": "נוצר על ידי קהילת Generative Manim ו-Animo",
+    "contributorLinks": {
+      "discord": "קהילת דיסקורד",
+      "manimPhysics": "Manim Physics",
+      "pullRequests": "Pull Requests",
+      "contributors": {
+        "marcelo": "מרסלו אריאס @360macky",
+        "puiching": "梦归云帆 @Puiching-Memory"
+      }
+    },
+    "haveIdea": "אם יש לך רעיון או שאתה רוצה לעזור לנו, עבור אל"
+  }
+}

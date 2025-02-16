@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Figtree } from "next/font/google";
 import "../globals.css";
 import { useTranslations } from "next-intl";
 import { Analytics } from "@vercel/analytics/react";
@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   ],
 };
 
+const figtree = Figtree({ subsets: ["latin"] });
+
 export default function LocaleLayout({
   children,
   params: { locale },
@@ -30,7 +32,7 @@ export default function LocaleLayout({
 }>) {
   const t = useTranslations("Index");
   return (
-    <html lang={locale} className="dark:[color-scheme:dark]">
+    <html lang={locale} className={`${figtree.className} dark:[color-scheme:dark]`}>
       <body>
         {children}
         <Analytics />

@@ -1,4 +1,5 @@
 "use client";
+import { useHotkeys } from "react-hotkeys-hook";
 
 import classNames from "classnames";
 import React, { useEffect, useState } from "react";
@@ -29,6 +30,38 @@ const Switcher = ({ translations }: { translations?: any }) => {
   const [promptToCodeLoading, setPromptToCodeLoading] = useState(false);
   const [renderizationLoading, setRenderizationLoading] = useState(false);
   const [currentVideoURL, setCurrentVideoURL] = useState("");
+  const [subscriberName, setSubscriberName] = useState("");
+  const [subscriberEmail, setSubscriberEmail] = useState("");
+  const [subscribeLoading, setSubscribeLoading] = useState(false);
+  const [feedbackStatus, setFeedbackStatus] = useState<
+    "POSITIVE" | "NEGATIVE" | null
+  >(null);
+  const [hasFeedbackBeenGiven, setHasFeedbackBeenGiven] = useState(false);
+
+  useHotkeys("mod+enter", (e) => {
+    e.preventDefault();
+    if (topBar === "main") {
+      handleVideoGeneration(e as unknown as React.FormEvent<HTMLFormElement>);
+    } else if (topBar === "render") {
+      handleRenderization(e as unknown as React.FormEvent<HTMLFormElement>);
+    } else if (topBar === "prompt") {
+      handleCodeGeneration(e as unknown as React.FormEvent<HTMLFormElement>);
+    }
+  });
+
+  useHotkeys("shift+1", (e) => {
+    e.preventDefault();
+    if (isFeedbackEnabled()) {
+      provideFeedback("POSITIVE");
+    }
+  });
+
+  useHotkeys("shift+2", (e) => {
+    e.preventDefault();
+    if (isFeedbackEnabled()) {
+      provideFeedback("NEGATIVE");
+    }
+  });
 
   const cleaner = (code: string) => {
     const cleaned = code.replace(/```python/g, "").replace(/```/g, "");
@@ -38,6 +71,8 @@ const Switcher = ({ translations }: { translations?: any }) => {
   const handleVideoGeneration = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setRenderizationLoading(true);
+    setFeedbackStatus(null);
+    setHasFeedbackBeenGiven(false);
     // Use handleCodeGeneration and handleRenderization in sequence
     try {
       const response = await fetch(
@@ -58,19 +93,22 @@ const Switcher = ({ translations }: { translations?: any }) => {
       setCodeToVideo(code);
       const iteration = Math.floor(Math.random() * 1000000);
 
-      const response2 = await fetch(`${process.env.NEXT_PUBLIC_SERVER_PROCESSOR}/v1/video/rendering`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code,
-          file_name: "GenScene.py",
-          file_class: "GenScene",
-          iteration,
-          project_name: "GenScene",
-        }),
-      });
+      const response2 = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_PROCESSOR}/v1/video/rendering`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code,
+            file_name: "GenScene.py",
+            file_class: "GenScene",
+            iteration,
+            project_name: "GenScene",
+          }),
+        }
+      );
 
       const data2 = await response2.json();
       const { video_url } = data2;
@@ -85,21 +123,26 @@ const Switcher = ({ translations }: { translations?: any }) => {
   const handleRenderization = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setRenderizationLoading(true);
+    setFeedbackStatus(null);
+    setHasFeedbackBeenGiven(false);
     try {
       const iteration = Math.floor(Math.random() * 1000000);
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_PROCESSOR}/v1/video/rendering`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code: codeToVideo,
-          file_name: "GenScene.py",
-          file_class: "GenScene",
-          iteration,
-          project_name: "GenScene",
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_PROCESSOR}/v1/video/rendering`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code: codeToVideo,
+            file_name: "GenScene.py",
+            file_class: "GenScene",
+            iteration,
+            project_name: "GenScene",
+          }),
+        }
+      );
       const data = await response.json();
       const { video_url } = data;
       setCurrentVideoURL(video_url);
@@ -113,6 +156,8 @@ const Switcher = ({ translations }: { translations?: any }) => {
   const handleCodeGeneration = async (e: React.FormEvent<HTMLFormElement>) => {
     setPromptToCodeLoading(true);
     e.preventDefault();
+    setFeedbackStatus(null);
+    setHasFeedbackBeenGiven(false);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_PROCESSOR}/v1/code/generation`,
@@ -137,6 +182,10 @@ const Switcher = ({ translations }: { translations?: any }) => {
   };
 
   const isFeedbackEnabled = (): boolean => {
+    if (hasFeedbackBeenGiven) {
+      return false;
+    }
+
     if (topBar === "main") {
       return (
         promptToCode !== "" && codeToVideo !== "" && currentVideoURL !== ""
@@ -150,6 +199,13 @@ const Switcher = ({ translations }: { translations?: any }) => {
   };
 
   const provideFeedback = async (feedback: "POSITIVE" | "NEGATIVE") => {
+    if (hasFeedbackBeenGiven) {
+      return;
+    }
+
+    setFeedbackStatus(feedback);
+    setHasFeedbackBeenGiven(true);
+
     const response = await fetch("/api/record-feedback", {
       method: "POST",
       headers: {
@@ -164,7 +220,41 @@ const Switcher = ({ translations }: { translations?: any }) => {
         model: promptToCodeModel,
       }),
     });
-    alert(translations?.Main?.feedbackThanks || "We have recorded your feedback. Thank you!");
+    alert(
+      translations?.Main?.feedbackThanks ||
+        "We have recorded your feedback. Thank you!"
+    );
+  };
+
+  const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubscribeLoading(true);
+
+    try {
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: subscriberName,
+          email: subscriberEmail,
+        }),
+      });
+
+      if (response.ok) {
+        alert("Successfully subscribed!");
+        setSubscriberName("");
+        setSubscriberEmail("");
+      } else {
+        alert("Error subscribing. Please try again.");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error subscribing. Please try again.");
+    } finally {
+      setSubscribeLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -229,6 +319,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   className="lg:w-96"
                   value={promptToCode}
                   onChange={(e) => setPromptToCode(e.target.value)}
+                  autoFocus
                 />
                 <Select
                   name="model"
@@ -237,7 +328,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   onChange={(e) => setPromptToCodeModel(e.target.value)}
                 >
                   <optgroup label={translations?.Main?.modelGroups?.openai}>
-                    <option value="gpt-4o">{translations?.Main?.models?.gpt4}</option>
+                    <option value="gpt-4o">
+                      {translations?.Main?.models?.gpt4}
+                    </option>
                     <option value="ft:gpt-3.5-turbo-1106:astronware:generative-manim-2:9OeVevto">
                       {translations?.Main?.models?.gpt35FineTuned}
                     </option>
@@ -254,7 +347,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     </option>
                   </optgroup>
                   <optgroup label={translations?.Main?.modelGroups?.deepseek}>
-                    <option value="deepseek-r1">{translations?.Main?.models?.deepseekR1}</option>
+                    <option value="deepseek-r1">
+                      {translations?.Main?.models?.deepseekR1}
+                    </option>
                   </optgroup>
                 </Select>
                 <Button
@@ -267,8 +362,8 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     <WandSparkles />
                   )}
                   <span>
-                    {renderizationLoading 
-                      ? translations?.Main?.generating 
+                    {renderizationLoading
+                      ? translations?.Main?.generating
                       : translations?.Main?.generate}
                   </span>
                 </Button>
@@ -303,28 +398,46 @@ const Switcher = ({ translations }: { translations?: any }) => {
                 <video
                   src={currentVideoURL}
                   controls
-                  className="mt-2 w-full rounded-lg"
+                  className="mt-2 w-full rounded-t-lg"
                 ></video>
                 <div
                   className={classNames(
-                    "flex gap-x-2 py-2 justify-center transition-all",
-                    {
-                      "opacity-0": !isFeedbackEnabled(),
-                    }
+                    "flex gap-x-2 justify-between items-center p-4 transition-all border-neutral-300 dark:border-neutral-800 rounded-b-lg bg-neutral-100 dark:bg-neutral-900"
                   )}
                 >
-                  <button
-                    className="p-4 rounded-xl bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 active:ring-4 active:ring-neutral-400 dark:active:ring-neutral-500 transition"
-                    onClick={() => provideFeedback("POSITIVE")}
-                  >
-                    <ThumbsUp />
-                  </button>
-                  <button
-                    className="p-4 rounded-xl bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 active:ring-4 active:ring-neutral-400 dark:active:ring-neutral-500 transition"
-                    onClick={() => provideFeedback("NEGATIVE")}
-                  >
-                    <ThumbsDown />
-                  </button>
+                  <span>Does the animation match the prompt?</span>
+                  <div className="flex gap-x-2">
+                    <button
+                      className={classNames(
+                        "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                        {
+                          "bg-green-200 dark:bg-green-700":
+                            feedbackStatus === "POSITIVE",
+                          "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                            feedbackStatus !== "POSITIVE",
+                        }
+                      )}
+                      onClick={() => provideFeedback("POSITIVE")}
+                      disabled={!isFeedbackEnabled()}
+                    >
+                      <ThumbsUp />
+                    </button>
+                    <button
+                      className={classNames(
+                        "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                        {
+                          "bg-red-200 dark:bg-red-700":
+                            feedbackStatus === "NEGATIVE",
+                          "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                            feedbackStatus !== "NEGATIVE",
+                        }
+                      )}
+                      onClick={() => provideFeedback("NEGATIVE")}
+                      disabled={!isFeedbackEnabled()}
+                    >
+                      <ThumbsDown />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -388,14 +501,32 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   )}
                 >
                   <button
-                    className="p-4 rounded-xl bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 active:ring-4 active:ring-neutral-400 dark:active:ring-neutral-500 transition"
+                    className={classNames(
+                      "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                      {
+                        "bg-green-200 dark:bg-green-700":
+                          feedbackStatus === "POSITIVE",
+                        "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                          feedbackStatus !== "POSITIVE",
+                      }
+                    )}
                     onClick={() => provideFeedback("POSITIVE")}
+                    disabled={!isFeedbackEnabled()}
                   >
                     <ThumbsUp />
                   </button>
                   <button
-                    className="p-4 rounded-xl bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 active:ring-4 active:ring-neutral-400 dark:active:ring-neutral-500 transition"
+                    className={classNames(
+                      "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                      {
+                        "bg-red-200 dark:bg-red-700":
+                          feedbackStatus === "NEGATIVE",
+                        "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                          feedbackStatus !== "NEGATIVE",
+                      }
+                    )}
                     onClick={() => provideFeedback("NEGATIVE")}
+                    disabled={!isFeedbackEnabled()}
                   >
                     <ThumbsDown />
                   </button>
@@ -415,6 +546,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   id="prompt"
                   type="text"
                   placeholder="Draw a red circle and transform it into a square"
+                  autoFocus
                   className="lg:w-96"
                   value={promptToCode}
                   onChange={(e) => setPromptToCode(e.target.value)}
@@ -426,7 +558,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   onChange={(e) => setPromptToCodeModel(e.target.value)}
                 >
                   <optgroup label={translations?.Main?.modelGroups?.openai}>
-                    <option value="gpt-4o">{translations?.Main?.models?.gpt4}</option>
+                    <option value="gpt-4o">
+                      {translations?.Main?.models?.gpt4}
+                    </option>
                     <option value="ft:gpt-3.5-turbo-1106:astronware:generative-manim-2:9OeVevto">
                       {translations?.Main?.models?.gpt35FineTuned}
                     </option>
@@ -440,7 +574,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     </option>
                   </optgroup>
                   <optgroup label={translations?.Main?.modelGroups?.deepseek}>
-                    <option value="deepseek-r1">{translations?.Main?.models?.deepseekR1}</option>
+                    <option value="deepseek-r1">
+                      {translations?.Main?.models?.deepseekR1}
+                    </option>
                   </optgroup>
                 </Select>
                 <Button
@@ -453,8 +589,8 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     <WandSparkles />
                   )}
                   <span>
-                    {promptToCodeLoading 
-                      ? translations?.Main?.generating 
+                    {promptToCodeLoading
+                      ? translations?.Main?.generating
                       : translations?.Main?.generate}
                   </span>
                 </Button>
@@ -495,14 +631,32 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   )}
                 >
                   <button
-                    className="p-4 rounded-xl bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 active:ring-4 active:ring-neutral-400 dark:active:ring-neutral-500 transition"
+                    className={classNames(
+                      "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                      {
+                        "bg-green-200 dark:bg-green-700":
+                          feedbackStatus === "POSITIVE",
+                        "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                          feedbackStatus !== "POSITIVE",
+                      }
+                    )}
                     onClick={() => provideFeedback("POSITIVE")}
+                    disabled={!isFeedbackEnabled()}
                   >
                     <ThumbsUp />
                   </button>
                   <button
-                    className="p-4 rounded-xl bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600 active:ring-4 active:ring-neutral-400 dark:active:ring-neutral-500 transition"
+                    className={classNames(
+                      "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                      {
+                        "bg-red-200 dark:bg-red-700":
+                          feedbackStatus === "NEGATIVE",
+                        "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                          feedbackStatus !== "NEGATIVE",
+                      }
+                    )}
                     onClick={() => provideFeedback("NEGATIVE")}
+                    disabled={!isFeedbackEnabled()}
                   >
                     <ThumbsDown />
                   </button>
