@@ -21,19 +21,30 @@ const sheetName = "Sheet1";
 
 export async function POST(req: Request) {
   try {
-    const { feedback, code, video_url, timestamp, prompt, model } = await req.json();
+    const { 
+      feedback, 
+      code, 
+      video_url, 
+      timestamp, 
+      prompt, 
+      model,
+      feedback_description  // Add this new field
+    } = await req.json();
 
-    if (!feedback || !code || !video_url || !timestamp || !prompt || !model) {
+    // Use feedback_description as prompt if it exists
+    const finalPrompt = feedback_description || prompt;
+
+    if (!feedback || !code || !video_url || !timestamp || !finalPrompt || !model) {
       return new Response("Missing required fields", { status: 400 });
     }
 
     // Append the feedback data to the Google Spreadsheet
     const response = await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: `${sheetName}!A:F`, // Updated to include 6 columns
+      range: `${sheetName}!A:F`,
       valueInputOption: "RAW",
       requestBody: {
-        values: [[timestamp, prompt, code, video_url, model, feedback]],
+        values: [[timestamp, finalPrompt, code, video_url, model, feedback]],
       },
     });
 

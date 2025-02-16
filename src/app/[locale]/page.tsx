@@ -203,7 +203,7 @@ export default function Home() {
             <p>
               {p("contributorsText")}{" "}
               <a
-                href="https://github.com/360macky/generative-manim/pulls"
+                href="https://github.com/marcelo-earth/generative-manim/pulls"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline decoration-rose-300 underline-offset-4"
@@ -215,7 +215,7 @@ export default function Home() {
             <ul className="list-disc list-inside">
               <li>
                 <a
-                  href="https://github.com/360macky"
+                  href="https://github.com/marcelo-earth"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline decoration-rose-300 underline-offset-4"
@@ -234,6 +234,10 @@ export default function Home() {
                 </a>
               </li>
             </ul>
+            <h4 className="text-lg lg:text-xl font-semibold tracking-tight mt-2">How to contribute</h4>
+            <p>
+              You can contribute to the project by submitting a pull request on GitHub.
+            </p>
           </section>
         </div>
       </main>

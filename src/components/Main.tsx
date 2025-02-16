@@ -6,17 +6,24 @@ import React, { useEffect, useState } from "react";
 import Input from "./Input";
 import Button from "./Button";
 import {
+  CodeIcon,
   Copy,
   Download,
+  Earth,
   Loader2,
+  PackagePlus,
+  Save,
+  Send,
   ThumbsDown,
   ThumbsUp,
   Video,
+  VideoIcon,
   WandSparkles,
 } from "lucide-react";
 import Editor from "@monaco-editor/react";
 import { useChat } from "ai/react";
 import Select from "./Select";
+import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize';
 
 const Switcher = ({ translations }: { translations?: any }) => {
   const [topBar, setTopBar] = useState<"main" | "render" | "prompt">("main");
@@ -25,6 +32,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [promptToCode, setPromptToCode] = useState("");
   const [codeToVideo, setCodeToVideo] = useState("");
+  const [feedbackDescription, setFeedbackDescription] = useState("");
   const [promptToCodeModel, setPromptToCodeModel] = useState("gpt-4o");
   const [promptToCodeResult, setPromptToCodeResult] = useState("");
   const [promptToCodeLoading, setPromptToCodeLoading] = useState(false);
@@ -37,6 +45,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
     "POSITIVE" | "NEGATIVE" | null
   >(null);
   const [hasFeedbackBeenGiven, setHasFeedbackBeenGiven] = useState(false);
+  const [showContributePrompt, setShowContributePrompt] = useState(true);
+  const [hasAcceptedContribute, setHasAcceptedContribute] = useState(false);
+  const [contributionLoading, setContributionLoading] = useState(false);
 
   useHotkeys("mod+enter", (e) => {
     e.preventDefault();
@@ -217,7 +228,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
         video_url: currentVideoURL,
         timestamp: new Date().toISOString(),
         prompt: promptToCode,
-        model: promptToCodeModel,
+        model: topBar === "render" ? "-" : promptToCodeModel,
       }),
     });
     // TODO: Add a tooltip to the button that says "We have recorded your feedback. Thank you!"
@@ -261,43 +272,57 @@ const Switcher = ({ translations }: { translations?: any }) => {
     ).matches;
     setIsDarkMode(prefersDarkMode);
 
+    // Check if user has already accepted to contribute
+    const hasAccepted = localStorage.getItem('hasAcceptedContribute') === 'true';
+    setHasAcceptedContribute(hasAccepted);
+    setShowContributePrompt(!hasAccepted);
+
     return () => {};
   }, []);
+
+  const handleAcceptContribute = () => {
+    localStorage.setItem('hasAcceptedContribute', 'true');
+    setHasAcceptedContribute(true);
+    setShowContributePrompt(false);
+  };
 
   return (
     <div className="w-full">
       <div className="w-full flex flex-col lg:flex-row bg-neutral-100 dark:bg-neutral-800 p-1 rounded-lg">
         <button
           className={classNames(
-            "p-2 w-full lg:w-4/12 text-sm lg:text-base rounded-lg transition",
+            "p-2 w-full lg:w-4/12 text-sm lg:text-base rounded-lg transition flex gap-x-2 items-center justify-center",
             {
               "bg-white dark:bg-neutral-900 shadow": topBar === "main",
             }
           )}
           onClick={() => setTopBar("main")}
         >
+          <VideoIcon className="w-5 h-5" />
           {translations?.generateVideo}
         </button>
         <button
           className={classNames(
-            "p-2 w-full lg:w-4/12 text-sm lg:text-base rounded-lg transition",
+            "p-2 w-full lg:w-4/12 text-sm lg:text-base rounded-lg transition flex gap-x-2 items-center justify-center",
             {
               "bg-white dark:bg-neutral-900 shadow": topBar === "render",
             }
           )}
           onClick={() => setTopBar("render")}
         >
+          <Earth className="w-5 h-5" />
           {translations?.renderEngine}
         </button>
         <button
           className={classNames(
-            "p-2 w-full lg:w-4/12 text-sm lg:text-base rounded-lg transition",
+            "p-2 w-full lg:w-4/12 text-sm lg:text-base rounded-lg transition flex gap-x-2 items-center justify-center",
             {
               "bg-white dark:bg-neutral-900 shadow": topBar === "prompt",
             }
           )}
           onClick={() => setTopBar("prompt")}
         >
+          <CodeIcon className="w-5 h-5" />
           {translations?.promptGenerator}
         </button>
       </div>
@@ -397,44 +422,115 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   controls
                   className="mt-2 w-full rounded-t-lg"
                 ></video>
+                {showContributePrompt ? (
+                  <div className={classNames(
+                    "flex flex-col gap-y-2 p-4 pl-6 transition-all border-neutral-300 dark:border-neutral-800 rounded-b-lg bg-neutral-100 dark:bg-neutral-900"
+                  )}>
+                    <span>Would you like to contribute to Generative Manim Dataset?<br /> Tell us what each animation is about</span>
+                    <Button
+                      className="px-6 flex gap-x-2 items-center justify-center"
+                      onClick={handleAcceptContribute}
+                    >
+                      <PackagePlus />
+                      <span>Start contributing</span>
+                    </Button>
+                  </div>
+                ) : hasAcceptedContribute && (
+                  <div className={classNames(
+                    "flex flex-col gap-y-2 gap-x-2 justify-between items-start p-4 pl-6 transition-all border-neutral-300 dark:border-neutral-800 rounded-b-lg bg-neutral-100 dark:bg-neutral-900"
+                  )}>
+                    <span id="feedback-description">
+                      What is the animation about?
+                    </span>
+                    <div className="flex gap-x-2 w-full">
+                      <TextareaAutosize
+                        className="transition block w-full p-2 text-gray-900 border-2 border-gray-300 rounded-lg bg-neutral-50 focus:border-rose-400 focus:ring-rose-200 focus:ring-4 focus:border-purple-medium dark:bg-black/30 dark:border-neutral-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-rose-400/40 dark:focus:border-purple-medium outline-none flex-grow"
+                        placeholder="Describe the animation"
+                        id="feedback-description"
+                        value={feedbackDescription}
+                        onChange={(e) => setFeedbackDescription(e.target.value)}
+                      />
+                    </div>
+                    <Button
+                      className="px-6 flex gap-x-2 items-center justify-center mt-2"
+                      disabled={contributionLoading}
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        setContributionLoading(true);
+                        try {
+                          const response = await fetch("/api/record-feedback", {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                              feedback: "POSITIVE",
+                              code: codeToVideo,
+                              video_url: currentVideoURL,
+                              timestamp: new Date().toISOString(),
+                              prompt: promptToCode,
+                              model: "-",
+                              feedback_description: feedbackDescription
+                            }),
+                          });
+                          
+                          if (response.ok) {
+                            setFeedbackDescription(""); // Clear the form after successful submission
+                          }
+                        } catch (error) {
+                          console.error('Error submitting contribution:', error);
+                        } finally {
+                          setContributionLoading(false);
+                        }
+                      }}
+                    >
+                      {contributionLoading ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        <PackagePlus />
+                      )}
+                      <span>{contributionLoading ? "Contributing..." : "Contribute"}</span>
+                    </Button>
+                  </div>
+                )}
                 <div
                   className={classNames(
-                    "flex gap-x-2 justify-between items-center p-4 transition-all border-neutral-300 dark:border-neutral-800 rounded-b-lg bg-neutral-100 dark:bg-neutral-900"
+                    "flex gap-x-2 py-2 justify-center transition-all",
+                    {
+                      "opacity-0": !isFeedbackEnabled(),
+                    }
                   )}
                 >
-                  <span>Does the animation match the prompt?</span>
-                  <div className="flex gap-x-2">
-                    <button
-                      className={classNames(
-                        "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
-                        {
-                          "bg-green-200 dark:bg-green-700":
-                            feedbackStatus === "POSITIVE",
-                          "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
-                            feedbackStatus !== "POSITIVE",
-                        }
-                      )}
-                      onClick={() => provideFeedback("POSITIVE")}
-                      disabled={!isFeedbackEnabled()}
-                    >
-                      <ThumbsUp />
-                    </button>
-                    <button
-                      className={classNames(
-                        "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
-                        {
-                          "bg-red-200 dark:bg-red-700":
-                            feedbackStatus === "NEGATIVE",
-                          "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
-                            feedbackStatus !== "NEGATIVE",
-                        }
-                      )}
-                      onClick={() => provideFeedback("NEGATIVE")}
-                      disabled={!isFeedbackEnabled()}
-                    >
-                      <ThumbsDown />
-                    </button>
-                  </div>
+                  <button
+                    className={classNames(
+                      "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                      {
+                        "bg-green-200 dark:bg-green-700":
+                          feedbackStatus === "POSITIVE",
+                        "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                          feedbackStatus !== "POSITIVE",
+                      }
+                    )}
+                    onClick={() => provideFeedback("POSITIVE")}
+                    disabled={!isFeedbackEnabled()}
+                  >
+                    <ThumbsUp />
+                  </button>
+                  <button
+                    className={classNames(
+                      "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                      {
+                        "bg-red-200 dark:bg-red-700":
+                          feedbackStatus === "NEGATIVE",
+                        "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                          feedbackStatus !== "NEGATIVE",
+                      }
+                    )}
+                    onClick={() => provideFeedback("NEGATIVE")}
+                    disabled={!isFeedbackEnabled()}
+                  >
+                    <ThumbsDown />
+                  </button>
                 </div>
               </div>
             </div>
@@ -487,8 +583,79 @@ const Switcher = ({ translations }: { translations?: any }) => {
                 <video
                   src={currentVideoURL}
                   controls
-                  className="mt-2 w-full rounded-lg"
+                  className="mt-2 w-full rounded-t-lg"
                 ></video>
+                {showContributePrompt ? (
+                  <div className={classNames(
+                    "flex flex-col gap-y-2 p-4 pl-6 transition-all border-neutral-300 dark:border-neutral-800 rounded-b-lg bg-neutral-100 dark:bg-neutral-900"
+                  )}>
+                    <span>Would you like to contribute to Generative Manim Dataset?<br /> Tell us what each animation is about</span>
+                    <Button
+                      className="px-6 flex gap-x-2 items-center justify-center"
+                      onClick={handleAcceptContribute}
+                    >
+                      <PackagePlus />
+                      <span>Start contributing</span>
+                    </Button>
+                  </div>
+                ) : hasAcceptedContribute && (
+                  <div className={classNames(
+                    "flex flex-col gap-y-2 gap-x-2 justify-between items-start p-4 pl-6 transition-all border-neutral-300 dark:border-neutral-800 rounded-b-lg bg-neutral-100 dark:bg-neutral-900"
+                  )}>
+                    <span id="feedback-description">
+                      What is the animation about?
+                    </span>
+                    <div className="flex gap-x-2 w-full">
+                      <TextareaAutosize
+                        className="transition block w-full p-2 text-gray-900 border-2 border-gray-300 rounded-lg bg-neutral-50 focus:border-rose-400 focus:ring-rose-200 focus:ring-4 focus:border-purple-medium dark:bg-black/30 dark:border-neutral-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-rose-400/40 dark:focus:border-purple-medium outline-none flex-grow"
+                        placeholder="Describe the animation"
+                        id="feedback-description"
+                        value={feedbackDescription}
+                        onChange={(e) => setFeedbackDescription(e.target.value)}
+                      />
+                    </div>
+                    <Button
+                      className="px-6 flex gap-x-2 items-center justify-center mt-2"
+                      disabled={contributionLoading}
+                      onClick={async (e) => {
+                        e.preventDefault();
+                        setContributionLoading(true);
+                        try {
+                          const response = await fetch("/api/record-feedback", {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                              feedback: "POSITIVE",
+                              code: codeToVideo,
+                              video_url: currentVideoURL,
+                              timestamp: new Date().toISOString(),
+                              prompt: promptToCode,
+                              model: topBar === "render" ? "-" : promptToCodeModel,
+                              feedback_description: feedbackDescription
+                            }),
+                          });
+                          
+                          if (response.ok) {
+                            setFeedbackDescription(""); // Clear the form after successful submission
+                          }
+                        } catch (error) {
+                          console.error('Error submitting contribution:', error);
+                        } finally {
+                          setContributionLoading(false);
+                        }
+                      }}
+                    >
+                      {contributionLoading ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        <PackagePlus />
+                      )}
+                      <span>{contributionLoading ? "Contributing..." : "Contribute"}</span>
+                    </Button>
+                  </div>
+                )}
                 <div
                   className={classNames(
                     "flex gap-x-2 py-2 justify-center transition-all",
