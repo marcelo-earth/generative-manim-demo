@@ -220,10 +220,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
         model: promptToCodeModel,
       }),
     });
-    alert(
-      translations?.Main?.feedbackThanks ||
-        "We have recorded your feedback. Thank you!"
-    );
+    // TODO: Add a tooltip to the button that says "We have recorded your feedback. Thank you!"
   };
 
   const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
