@@ -422,115 +422,42 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   controls
                   className="mt-2 w-full rounded-t-lg"
                 ></video>
-                {showContributePrompt ? (
-                  <div className={classNames(
-                    "flex flex-col gap-y-2 p-4 pl-6 transition-all border-neutral-300 dark:border-neutral-800 rounded-b-lg bg-neutral-100 dark:bg-neutral-900"
-                  )}>
-                    <span>Would you like to contribute to Generative Manim Dataset?<br /> Tell us what each animation is about</span>
-                    <Button
-                      className="px-6 flex gap-x-2 items-center justify-center"
-                      onClick={handleAcceptContribute}
-                    >
-                      <PackagePlus />
-                      <span>Start contributing</span>
-                    </Button>
-                  </div>
-                ) : hasAcceptedContribute && (
-                  <div className={classNames(
-                    "flex flex-col gap-y-2 gap-x-2 justify-between items-start p-4 pl-6 transition-all border-neutral-300 dark:border-neutral-800 rounded-b-lg bg-neutral-100 dark:bg-neutral-900"
-                  )}>
-                    <span id="feedback-description">
-                      What is the animation about?
-                    </span>
-                    <div className="flex gap-x-2 w-full">
-                      <TextareaAutosize
-                        className="transition block w-full p-2 text-gray-900 border-2 border-gray-300 rounded-lg bg-neutral-50 focus:border-rose-400 focus:ring-rose-200 focus:ring-4 focus:border-purple-medium dark:bg-black/30 dark:border-neutral-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-rose-400/40 dark:focus:border-purple-medium outline-none flex-grow"
-                        placeholder="Describe the animation"
-                        id="feedback-description"
-                        value={feedbackDescription}
-                        onChange={(e) => setFeedbackDescription(e.target.value)}
-                      />
-                    </div>
-                    <Button
-                      className="px-6 flex gap-x-2 items-center justify-center mt-2"
-                      disabled={contributionLoading}
-                      onClick={async (e) => {
-                        e.preventDefault();
-                        setContributionLoading(true);
-                        try {
-                          const response = await fetch("/api/record-feedback", {
-                            method: "POST",
-                            headers: {
-                              "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                              feedback: "POSITIVE",
-                              code: codeToVideo,
-                              video_url: currentVideoURL,
-                              timestamp: new Date().toISOString(),
-                              prompt: promptToCode,
-                              model: "-",
-                              feedback_description: feedbackDescription
-                            }),
-                          });
-                          
-                          if (response.ok) {
-                            setFeedbackDescription(""); // Clear the form after successful submission
-                          }
-                        } catch (error) {
-                          console.error('Error submitting contribution:', error);
-                        } finally {
-                          setContributionLoading(false);
-                        }
-                      }}
-                    >
-                      {contributionLoading ? (
-                        <Loader2 className="animate-spin" />
-                      ) : (
-                        <PackagePlus />
-                      )}
-                      <span>{contributionLoading ? "Contributing..." : "Contribute"}</span>
-                    </Button>
-                  </div>
-                )}
                 <div
                   className={classNames(
-                    "flex gap-x-2 py-2 justify-center transition-all",
-                    {
-                      "opacity-0": !isFeedbackEnabled(),
-                    }
+                    "flex gap-x-2 justify-between items-center p-4 pl-6 transition-all border-neutral-300 dark:border-neutral-800 rounded-b-lg bg-neutral-100 dark:bg-neutral-900"
                   )}
                 >
-                  <button
-                    className={classNames(
-                      "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
-                      {
-                        "bg-green-200 dark:bg-green-700":
-                          feedbackStatus === "POSITIVE",
-                        "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
-                          feedbackStatus !== "POSITIVE",
-                      }
-                    )}
-                    onClick={() => provideFeedback("POSITIVE")}
-                    disabled={!isFeedbackEnabled()}
-                  >
-                    <ThumbsUp />
-                  </button>
-                  <button
-                    className={classNames(
-                      "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
-                      {
-                        "bg-red-200 dark:bg-red-700":
-                          feedbackStatus === "NEGATIVE",
-                        "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
-                          feedbackStatus !== "NEGATIVE",
-                      }
-                    )}
-                    onClick={() => provideFeedback("NEGATIVE")}
-                    disabled={!isFeedbackEnabled()}
-                  >
-                    <ThumbsDown />
-                  </button>
+                  <span>Does the animation match the prompt?</span>
+                  <div className="flex gap-x-2">
+                    <button
+                      className={classNames(
+                        "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                        {
+                          "bg-green-200 dark:bg-green-700": feedbackStatus === "POSITIVE",
+                          "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                            feedbackStatus !== "POSITIVE",
+                        }
+                      )}
+                      onClick={() => provideFeedback("POSITIVE")}
+                      disabled={!isFeedbackEnabled()}
+                    >
+                      <ThumbsUp />
+                    </button>
+                    <button
+                      className={classNames(
+                        "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                        {
+                          "bg-red-200 dark:bg-red-700": feedbackStatus === "NEGATIVE",
+                          "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                            feedbackStatus !== "NEGATIVE",
+                        }
+                      )}
+                      onClick={() => provideFeedback("NEGATIVE")}
+                      disabled={!isFeedbackEnabled()}
+                    >
+                      <ThumbsDown />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -632,7 +559,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
                               video_url: currentVideoURL,
                               timestamp: new Date().toISOString(),
                               prompt: promptToCode,
-                              model: topBar === "render" ? "-" : promptToCodeModel,
+                              model: "-",
                               feedback_description: feedbackDescription
                             }),
                           });
