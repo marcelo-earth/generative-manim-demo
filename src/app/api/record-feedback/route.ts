@@ -41,10 +41,19 @@ export async function POST(req: Request) {
     // Append the feedback data to the Google Spreadsheet
     const response = await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: `${sheetName}!A:F`,
+      range: `${sheetName}!A:H`,
       valueInputOption: "RAW",
       requestBody: {
-        values: [[timestamp, finalPrompt, code, video_url, model, feedback]],
+        values: [[
+          timestamp, 
+          finalPrompt, 
+          code, 
+          video_url, 
+          model, 
+          feedback,
+          "",  // Empty string for note feedback (column G)
+          "Generative Manim Demo"  // Origin (column H)
+        ]],
       },
     });
 
