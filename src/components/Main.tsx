@@ -26,7 +26,7 @@ import Select from "./Select";
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize';
 
 const Switcher = ({ translations }: { translations?: any }) => {
-  const [topBar, setTopBar] = useState<"main" | "render" | "prompt">("main");
+  const [topBar, setTopBar] = useState<"main" | "render" | "prompt" | "dataset">("main");
   const { messages, input, handleInputChange, handleSubmit, setMessages } =
     useChat({});
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -48,6 +48,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
   const [showContributePrompt, setShowContributePrompt] = useState(true);
   const [hasAcceptedContribute, setHasAcceptedContribute] = useState(false);
   const [contributionLoading, setContributionLoading] = useState(false);
+  const [datasetItems, setDatasetItems] = useState<any[]>([]);
+  const [currentDatasetIndex, setCurrentDatasetIndex] = useState(0);
+  const [isLoadingDataset, setIsLoadingDataset] = useState(false);
 
   useHotkeys("mod+enter", (e) => {
     e.preventDefault();
@@ -286,6 +289,38 @@ const Switcher = ({ translations }: { translations?: any }) => {
     setShowContributePrompt(false);
   };
 
+  useEffect(() => {
+    if (topBar === "dataset") {
+      fetchDataset();
+    }
+  }, [topBar]);
+
+  const fetchDataset = async () => {
+    setIsLoadingDataset(true);
+    try {
+      const response = await fetch('/api/dataset');
+      const data = await response.json();
+      console.log('Dataset received:', data);
+      // Map the data to match our expected structure
+      const formattedData = data.map((item: any) => ({
+        timestamp: item.Timestamp,
+        prompt: item.Prompt,
+        code: item.Code,
+        video_url: item["Video URL"],  // Note the space in column name
+        model: item.Model,
+        feedback: item.Feedback
+      }));
+      
+      setDatasetItems(formattedData.filter((item: any) => 
+        item.code && item.video_url && item.prompt
+      ));
+    } catch (error) {
+      console.error('Error fetching dataset:', error);
+    } finally {
+      setIsLoadingDataset(false);
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="w-full flex flex-col lg:flex-row bg-neutral-100 dark:bg-neutral-800 p-1 rounded-lg">
@@ -324,6 +359,18 @@ const Switcher = ({ translations }: { translations?: any }) => {
         >
           <CodeIcon className="w-5 h-5" />
           {translations?.promptGenerator}
+        </button>
+        <button
+          className={classNames(
+            "p-2 w-full lg:w-3/12 text-sm lg:text-base rounded-lg transition flex gap-x-2 items-center justify-center",
+            {
+              "bg-white dark:bg-neutral-900 shadow": topBar === "dataset",
+            }
+          )}
+          onClick={() => setTopBar("dataset")}
+        >
+          <Save className="w-5 h-5" />
+          {translations?.dataset || "Dataset"}
         </button>
       </div>
       <div className="w-full min-h-[40vh]">
@@ -773,6 +820,178 @@ const Switcher = ({ translations }: { translations?: any }) => {
                 </Button>
               </div>
             </div>
+          </div>
+        )}
+        {topBar === "dataset" && (
+          <div className="w-full mt-6 max-w-7xl mx-auto">
+            {isLoadingDataset ? (
+              <div className="flex justify-center items-center h-[60vh]">
+                <Loader2 className="w-8 h-8 animate-spin" />
+              </div>
+            ) : datasetItems.length > 0 ? (
+              <div className="w-full space-y-6">
+                <div className="flex justify-between items-center">
+                  <div className="space-y-1 text-left flex gap-x-2 flex-col items-start justify-start">
+                    <h2 className="text-2xl font-semibold">
+                      Dataset Explorer
+                    </h2>
+                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                      Example <input 
+                        type="number" 
+                        min="1" 
+                        max={datasetItems.length}
+                        value={currentDatasetIndex + 1}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 1;
+                          setCurrentDatasetIndex(Math.min(Math.max(val - 1, 0), datasetItems.length - 1));
+                        }}
+                        className="w-16 px-2 py-1 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800"
+                      /> of {datasetItems.length}
+                      <button
+                        onClick={() => {
+                          const input = document.querySelector('input[type="number"]') as HTMLInputElement;
+                          const val = parseInt(input.value) || 1;
+                          setCurrentDatasetIndex(Math.min(Math.max(val - 1, 0), datasetItems.length - 1));
+                        }}
+                        className="ml-2 px-4 py-1 border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-md text-neutral-600 dark:text-white"
+                      >
+                        Check
+                      </button>
+                    </p>
+                  </div>
+                  <div className="flex gap-x-3">
+                    <button
+                      onClick={() => setCurrentDatasetIndex(prev => 
+                        prev === 0 ? datasetItems.length - 1 : prev - 1
+                      )}
+                      className="px-6 py-2 rounded-lg bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition border border-neutral-300 dark:border-neutral-700"
+                    >
+                      ← Previous
+                    </button>
+                    <button
+                      onClick={() => setCurrentDatasetIndex(prev => 
+                        prev === datasetItems.length - 1 ? 0 : prev + 1
+                      )}
+                      className="px-6 py-2 rounded-lg bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 transition border border-neutral-300 dark:border-neutral-700"
+                    >
+                      Next →
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="flex flex-col gap-y-6">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-x-3">
+                        <h3 className="text-lg font-medium">Prompt</h3>
+                        <div className="px-3 py-1 rounded-full bg-neutral-200 dark:bg-neutral-800 text-xs">
+                          Input
+                        </div>
+                      </div>
+                      <div className="p-5 rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800">
+                        <p className="text-neutral-700 dark:text-neutral-300 text-sm text-left">
+                          {datasetItems[currentDatasetIndex]?.prompt || 'No prompt available'}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3 flex-grow">
+                      <div className="flex items-center gap-x-3">
+                        <h3 className="text-lg font-medium">Code</h3>
+                        <div className="px-3 py-1 rounded-full bg-neutral-200 dark:bg-neutral-800 text-xs">
+                          Python
+                        </div>
+                      </div>
+                      <Editor
+                        height="40vh"
+                        defaultLanguage="python"
+                        options={{
+                          fontSize: 14,
+                          wordWrap: "on",
+                          readOnly: true,
+                          minimap: { enabled: false },
+                          scrollBeyondLastLine: false,
+                        }}
+                        theme={isDarkMode ? "vs-dark" : "vs-light"}
+                        className="overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800"
+                        value={datasetItems[currentDatasetIndex]?.code || '# No code available'}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col gap-y-6">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-x-3">
+                        <h3 className="text-lg font-medium">Result</h3>
+                        <div className="px-3 py-1 rounded-full bg-neutral-200 dark:bg-neutral-800 text-xs">
+                          Video
+                        </div>
+                      </div>
+                      {datasetItems[currentDatasetIndex]?.video_url ? (
+                        <video
+                          key={datasetItems[currentDatasetIndex].video_url}
+                          src={datasetItems[currentDatasetIndex].video_url}
+                          controls
+                          className="w-full aspect-video rounded-xl bg-neutral-900 border border-neutral-200 dark:border-neutral-800"
+                          loop
+                          autoPlay
+                          playsInline
+                        />
+                      ) : (
+                        <div className="w-full aspect-video flex items-center justify-center rounded-xl bg-neutral-900 text-neutral-400">
+                          No video available
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="p-5 rounded-xl bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 space-y-3">
+                      <div className="flex items-center gap-x-4">
+                        <div className="flex items-center gap-x-2">
+                          <span className="text-sm font-medium">Model:</span>
+                          <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                            {datasetItems[currentDatasetIndex]?.model || 'Unknown'}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="h-px bg-neutral-200 dark:bg-neutral-800" />
+                      
+                      <div className="flex items-center gap-x-3">
+                        <span className="text-sm font-medium">Feedback:</span>
+                        {datasetItems[currentDatasetIndex]?.feedback === "POSITIVE" ? (
+                          <div className="flex items-center gap-x-1.5 text-green-600 dark:text-green-400">
+                            <ThumbsUp className="w-4 h-4" />
+                            <span className="text-sm font-medium">Positive</span>
+                          </div>
+                        ) : datasetItems[currentDatasetIndex]?.feedback === "NEGATIVE" ? (
+                          <div className="flex items-center gap-x-1.5 text-red-600 dark:text-red-400">
+                            <ThumbsDown className="w-4 h-4" />
+                            <span className="text-sm font-medium">Negative</span>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-neutral-500">No feedback</span>
+                        )}
+                      </div>
+
+                      <div className="h-px bg-neutral-200 dark:bg-neutral-800" />
+
+                      <div className="flex items-center gap-x-2">
+                          <span className="text-sm font-medium">Date:</span>
+                          <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                            {datasetItems[currentDatasetIndex]?.timestamp ? 
+                              new Date(datasetItems[currentDatasetIndex].timestamp).toLocaleString() : 
+                              'Unknown'}
+                          </span>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-center items-center h-[60vh]">
+                <p className="text-neutral-600 dark:text-neutral-400">No dataset items available</p>
+              </div>
+            )}
           </div>
         )}
       </div>

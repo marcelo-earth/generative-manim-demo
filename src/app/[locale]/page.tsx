@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <>
       <main className="flex min-h-screen flex-col items-center justify-center w-full bg-white dark:bg-neutral-950 dark:text-white">
-        <div className="text-center gap-y-4 px-0 lg:px-24 w-full">
+        <div className="text-center gap-y-4 px-0 lg:px-6 w-full">
           <Image
             src={Logo}
             alt="Generative Manim logo"

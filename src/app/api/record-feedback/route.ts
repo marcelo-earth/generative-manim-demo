@@ -47,7 +47,7 @@ export async function POST(req: Request) {
         values: [[
           timestamp, 
           finalPrompt, 
-          code, 
+          code,
           video_url, 
           model, 
           feedback,
