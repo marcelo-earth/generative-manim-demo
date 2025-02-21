@@ -4,6 +4,7 @@ import { JWT } from "google-auth-library";
 const privateKey = process.env.SPREADSHEET_PRIVATE_KEY?.replace(/\\n/g, '\n');
 const email = process.env.SPREADSHEET_EMAIL;
 
+
 // Add validation for environment variables
 if (!privateKey || !email) {
   throw new Error("Missing required environment variables SPREADSHEET_PRIVATE_KEY or SPREADSHEET_EMAIL");
@@ -18,6 +19,8 @@ const authClient = new JWT({
 const sheets = google.sheets({ version: "v4", auth: authClient });
 const spreadsheetId = "1F1nch7fCcHuDKf1hk6lWJ_-W3w6uNasZ1wRBVBPu5sc";
 const sheetName = "Sheet1";
+
+export const revalidate = 0;
 
 export async function GET() {
   try {
