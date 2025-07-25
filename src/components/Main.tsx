@@ -89,6 +89,10 @@ const Switcher = ({ translations }: { translations?: any }) => {
     setHasFeedbackBeenGiven(false);
     // Use handleCodeGeneration and handleRenderization in sequence
     try {
+      const finalPrompt = promptToCode.toLowerCase().includes('animation') 
+        ? promptToCode 
+        : `Create a Manim animation of ${promptToCode}`;
+      
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_PROCESSOR}/v1/code/generation`,
         {
@@ -97,7 +101,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            prompt: promptToCode,
+            prompt: finalPrompt,
             model: promptToCodeModel,
           }),
         }
@@ -173,6 +177,10 @@ const Switcher = ({ translations }: { translations?: any }) => {
     setFeedbackStatus(null);
     setHasFeedbackBeenGiven(false);
     try {
+      const finalPrompt = promptToCode.toLowerCase().includes('animation') 
+        ? promptToCode 
+        : `Create a Manim animation of ${promptToCode}`;
+      
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_PROCESSOR}/v1/code/generation`,
         {
@@ -181,7 +189,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            prompt: promptToCode,
+            prompt: finalPrompt,
             model: promptToCodeModel,
           }),
         }
@@ -220,6 +228,10 @@ const Switcher = ({ translations }: { translations?: any }) => {
     setFeedbackStatus(feedback);
     setHasFeedbackBeenGiven(true);
 
+    const finalPrompt = promptToCode.toLowerCase().includes('animation') 
+      ? promptToCode 
+      : `Create a Manim animation of ${promptToCode}`;
+
     const response = await fetch("/api/record-feedback", {
       method: "POST",
       headers: {
@@ -230,7 +242,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
         code: codeToVideo,
         video_url: currentVideoURL,
         timestamp: new Date().toISOString(),
-        prompt: promptToCode,
+        prompt: finalPrompt,
         model: topBar === "render" ? "-" : promptToCodeModel,
       }),
     });
@@ -601,6 +613,10 @@ const Switcher = ({ translations }: { translations?: any }) => {
                         e.preventDefault();
                         setContributionLoading(true);
                         try {
+                          const finalPrompt = promptToCode.toLowerCase().includes('animation') 
+                            ? promptToCode 
+                            : `Create a Manim animation of ${promptToCode}`;
+                          
                           const response = await fetch("/api/record-feedback", {
                             method: "POST",
                             headers: {
@@ -611,7 +627,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
                               code: codeToVideo,
                               video_url: currentVideoURL,
                               timestamp: new Date().toISOString(),
-                              prompt: promptToCode,
+                              prompt: finalPrompt,
                               model: "-",
                               feedback_description: feedbackDescription
                             }),
