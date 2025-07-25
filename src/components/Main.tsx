@@ -51,6 +51,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
   const [datasetItems, setDatasetItems] = useState<any[]>([]);
   const [currentDatasetIndex, setCurrentDatasetIndex] = useState(0);
   const [isLoadingDataset, setIsLoadingDataset] = useState(false);
+  const [showThanksMessage, setShowThanksMessage] = useState(false);
 
   useHotkeys("mod+enter", (e) => {
     e.preventDefault();
@@ -87,6 +88,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
     setRenderizationLoading(true);
     setFeedbackStatus(null);
     setHasFeedbackBeenGiven(false);
+    setShowThanksMessage(false);
     // Use handleCodeGeneration and handleRenderization in sequence
     try {
       const finalPrompt = promptToCode.toLowerCase().includes('animation') 
@@ -143,6 +145,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
     setRenderizationLoading(true);
     setFeedbackStatus(null);
     setHasFeedbackBeenGiven(false);
+    setShowThanksMessage(false);
     try {
       const iteration = Math.floor(Math.random() * 1000000);
       const response = await fetch(
@@ -176,6 +179,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
     e.preventDefault();
     setFeedbackStatus(null);
     setHasFeedbackBeenGiven(false);
+    setShowThanksMessage(false);
     try {
       const finalPrompt = promptToCode.toLowerCase().includes('animation') 
         ? promptToCode 
@@ -228,6 +232,11 @@ const Switcher = ({ translations }: { translations?: any }) => {
     setFeedbackStatus(feedback);
     setHasFeedbackBeenGiven(true);
 
+    // Show thanks message after 5 seconds
+    setTimeout(() => {
+      setShowThanksMessage(true);
+    }, 5000);
+
     const finalPrompt = promptToCode.toLowerCase().includes('animation') 
       ? promptToCode 
       : `Create a Manim animation of ${promptToCode}`;
@@ -247,6 +256,29 @@ const Switcher = ({ translations }: { translations?: any }) => {
       }),
     });
     // TODO: Add a tooltip to the button that says "We have recorded your feedback. Thank you!"
+  };
+
+  const downloadVideo = () => {
+    if (currentVideoURL) {
+      const link = document.createElement('a');
+      link.href = currentVideoURL;
+      link.download = `${promptToCode.toLowerCase().split(" ").join("-")}-animation.mp4`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const regenerateAnimation = () => {
+    setShowThanksMessage(false);
+    setFeedbackStatus(null);
+    setHasFeedbackBeenGiven(false);
+    setCurrentVideoURL("");
+    // Trigger video generation again
+    const fakeEvent = {
+      preventDefault: () => {},
+    } as React.FormEvent<HTMLFormElement>;
+    handleVideoGeneration(fakeEvent);
   };
 
   const handleSubscribe = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -492,37 +524,69 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     "flex gap-x-2 justify-between items-center p-4 pl-6 transition-all border-neutral-300 dark:border-neutral-800 rounded-b-lg bg-neutral-100 dark:bg-neutral-900"
                   )}
                 >
-                  <span>Does the animation match the prompt?</span>
-                  <div className="flex gap-x-2">
-                    <button
-                      className={classNames(
-                        "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
-                        {
-                          "bg-green-200 dark:bg-green-700": feedbackStatus === "POSITIVE",
-                          "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
-                            feedbackStatus !== "POSITIVE",
-                        }
-                      )}
-                      onClick={() => provideFeedback("POSITIVE")}
-                      disabled={!isFeedbackEnabled()}
-                    >
-                      <ThumbsUp />
-                    </button>
-                    <button
-                      className={classNames(
-                        "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
-                        {
-                          "bg-red-200 dark:bg-red-700": feedbackStatus === "NEGATIVE",
-                          "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
-                            feedbackStatus !== "NEGATIVE",
-                        }
-                      )}
-                      onClick={() => provideFeedback("NEGATIVE")}
-                      disabled={!isFeedbackEnabled()}
-                    >
-                      <ThumbsDown />
-                    </button>
-                  </div>
+                  {showThanksMessage ? (
+                    <>
+                      <span>Thanks for the feedback!</span>
+                      <div className="flex gap-x-2">
+                        {feedbackStatus === "POSITIVE" ? (
+                          <Button
+                            className="px-4 flex gap-x-2 items-center justify-center"
+                            onClick={downloadVideo}
+                          >
+                            <Download className="w-4 h-4" />
+                            <span>Download Animation</span>
+                          </Button>
+                        ) : (
+                          <Button
+                            className="px-4 flex gap-x-2 items-center justify-center"
+                            onClick={regenerateAnimation}
+                            disabled={renderizationLoading}
+                          >
+                            {renderizationLoading ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <WandSparkles className="w-4 h-4" />
+                            )}
+                            <span>Generate Again</span>
+                          </Button>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <span>Does the animation match the prompt?</span>
+                      <div className="flex gap-x-2">
+                        <button
+                          className={classNames(
+                            "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                            {
+                              "bg-green-200 dark:bg-green-700": feedbackStatus === "POSITIVE",
+                              "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                                feedbackStatus !== "POSITIVE",
+                            }
+                          )}
+                          onClick={() => provideFeedback("POSITIVE")}
+                          disabled={!isFeedbackEnabled()}
+                        >
+                          <ThumbsUp />
+                        </button>
+                        <button
+                          className={classNames(
+                            "p-4 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed",
+                            {
+                              "bg-red-200 dark:bg-red-700": feedbackStatus === "NEGATIVE",
+                              "bg-neutral-200 dark:bg-neutral-700 hover:bg-neutral-300 dark:hover:bg-neutral-600":
+                                feedbackStatus !== "NEGATIVE",
+                            }
+                          )}
+                          onClick={() => provideFeedback("NEGATIVE")}
+                          disabled={!isFeedbackEnabled()}
+                        >
+                          <ThumbsDown />
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
