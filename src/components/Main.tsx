@@ -24,6 +24,7 @@ import Editor from "@monaco-editor/react";
 import { useChat } from "ai/react";
 import Select from "./Select";
 import TextareaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize';
+import { toast } from "sonner";
 
 const Switcher = ({ translations }: { translations?: any }) => {
   const [topBar, setTopBar] = useState<"main" | "render" | "prompt" | "dataset">("main");
@@ -133,8 +134,10 @@ const Switcher = ({ translations }: { translations?: any }) => {
       const data2 = await response2.json();
       const { video_url } = data2;
       setCurrentVideoURL(video_url);
+      toast.success("Video generated successfully!");
     } catch (error) {
       console.error(error);
+      toast.error("Failed to generate video. Please try again.");
     } finally {
       setRenderizationLoading(false);
     }
@@ -167,8 +170,10 @@ const Switcher = ({ translations }: { translations?: any }) => {
       const data = await response.json();
       const { video_url } = data;
       setCurrentVideoURL(video_url);
+      toast.success("Video rendered successfully!");
     } catch (error) {
       console.error(error);
+      toast.error("Failed to render video. Please try again.");
     } finally {
       setRenderizationLoading(false);
     }
@@ -200,8 +205,10 @@ const Switcher = ({ translations }: { translations?: any }) => {
       );
       const data = await response.json();
       setPromptToCodeResult(cleaner(data.code));
+      toast.success("Code generated successfully!");
     } catch (error) {
       console.error(error);
+      toast.error("Failed to generate code. Please try again.");
     } finally {
       setPromptToCodeLoading(false);
     }
@@ -699,9 +706,13 @@ const Switcher = ({ translations }: { translations?: any }) => {
                           
                           if (response.ok) {
                             setFeedbackDescription(""); // Clear the form after successful submission
+                            toast.success("Thank you for your contribution!");
+                          } else {
+                            toast.error("Failed to submit contribution. Please try again.");
                           }
                         } catch (error) {
                           console.error('Error submitting contribution:', error);
+                          toast.error("Failed to submit contribution. Please try again.");
                         } finally {
                           setContributionLoading(false);
                         }
@@ -844,6 +855,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   disabled={!promptToCodeResult}
                   onClick={() => {
                     navigator.clipboard.writeText(promptToCodeResult);
+                    toast.success("Code copied to clipboard!");
                   }}
                 >
                   <Copy />
@@ -902,6 +914,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     document.body.appendChild(element); // Required for this to work in FireFox
                     element.click();
                     document.body.removeChild(element);
+                    toast.success("Code file downloaded successfully!");
                   }}
                 >
                   <Download />

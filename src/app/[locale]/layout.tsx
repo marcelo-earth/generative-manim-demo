@@ -3,6 +3,7 @@ import { Figtree } from "next/font/google";
 import "../globals.css";
 import { useTranslations } from "next-intl";
 import { Analytics } from "@vercel/analytics/react";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Generative Manim",
@@ -36,6 +37,7 @@ export default function LocaleLayout({
       <body>
         {children}
         <Analytics />
+        <Toaster />
       </body>
     </html>
   );
