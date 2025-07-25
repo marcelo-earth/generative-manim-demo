@@ -33,7 +33,7 @@ const Switcher = ({ translations }: { translations?: any }) => {
   const [promptToCode, setPromptToCode] = useState("");
   const [codeToVideo, setCodeToVideo] = useState("");
   const [feedbackDescription, setFeedbackDescription] = useState("");
-  const [promptToCodeModel, setPromptToCodeModel] = useState("gpt-4o");
+  const [promptToCodeModel, setPromptToCodeModel] = useState("claude-sonnet-4-20250514");
   const [promptToCodeResult, setPromptToCodeResult] = useState("");
   const [promptToCodeLoading, setPromptToCodeLoading] = useState(false);
   const [renderizationLoading, setRenderizationLoading] = useState(false);
@@ -408,17 +408,6 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   value={promptToCodeModel}
                   onChange={(e) => setPromptToCodeModel(e.target.value)}
                 >
-                  <optgroup label={translations?.Main?.modelGroups?.openai}>
-                    <option value="gpt-4o">
-                      {translations?.Main?.models?.gpt4}
-                    </option>
-                    <option value="ft:gpt-3.5-turbo-1106:astronware:generative-manim-2:9OeVevto">
-                      {translations?.Main?.models?.gpt35FineTuned}
-                    </option>
-                    <option value="ft:gpt-3.5-turbo-1106:astronware:gm-physics-01:9hr68Zu9">
-                      {translations?.Main?.models?.gpt35Physics}
-                    </option>
-                  </optgroup>
                   <optgroup label={translations?.Main?.modelGroups?.claude}>
                     <option value="claude-sonnet-4-20250514">
                       Claude Sonnet 4
@@ -431,6 +420,17 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     </option>
                     <option value="claude-3-sonnet-20240229">
                       {translations?.Main?.models?.claude3}
+                    </option>
+                  </optgroup>
+                  <optgroup label={translations?.Main?.modelGroups?.openai}>
+                    <option value="gpt-4o">
+                      {translations?.Main?.models?.gpt4}
+                    </option>
+                    <option value="ft:gpt-3.5-turbo-1106:astronware:generative-manim-2:9OeVevto">
+                      {translations?.Main?.models?.gpt35FineTuned}
+                    </option>
+                    <option value="ft:gpt-3.5-turbo-1106:astronware:gm-physics-01:9hr68Zu9">
+                      {translations?.Main?.models?.gpt35Physics}
                     </option>
                   </optgroup>
                   <optgroup label={translations?.Main?.modelGroups?.deepseek}>
@@ -717,14 +717,6 @@ const Switcher = ({ translations }: { translations?: any }) => {
                   value={promptToCodeModel}
                   onChange={(e) => setPromptToCodeModel(e.target.value)}
                 >
-                  <optgroup label={translations?.Main?.modelGroups?.openai}>
-                    <option value="gpt-4o">
-                      {translations?.Main?.models?.gpt4}
-                    </option>
-                    <option value="ft:gpt-3.5-turbo-1106:astronware:generative-manim-2:9OeVevto">
-                      {translations?.Main?.models?.gpt35FineTuned}
-                    </option>
-                  </optgroup>
                   <optgroup label={translations?.Main?.modelGroups?.claude}>
                     <option value="claude-sonnet-4-20250514">
                       Claude Sonnet 4
@@ -734,6 +726,14 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     </option>
                     <option value="claude-3-sonnet-20240229">
                       {translations?.Main?.models?.claude3}
+                    </option>
+                  </optgroup>
+                  <optgroup label={translations?.Main?.modelGroups?.openai}>
+                    <option value="gpt-4o">
+                      {translations?.Main?.models?.gpt4}
+                    </option>
+                    <option value="ft:gpt-3.5-turbo-1106:astronware:generative-manim-2:9OeVevto">
+                      {translations?.Main?.models?.gpt35FineTuned}
                     </option>
                   </optgroup>
                   <optgroup label={translations?.Main?.modelGroups?.deepseek}>
