@@ -408,6 +408,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     </option>
                   </optgroup>
                   <optgroup label={translations?.Main?.modelGroups?.claude}>
+                    <option value="claude-sonnet-4-20250514">
+                      Claude Sonnet 4
+                    </option>
                     <option value="claude-3-7-sonnet-20250219">
                       Claude 3.7 Sonnet
                     </option>
@@ -707,6 +710,9 @@ const Switcher = ({ translations }: { translations?: any }) => {
                     </option>
                   </optgroup>
                   <optgroup label={translations?.Main?.modelGroups?.claude}>
+                    <option value="claude-sonnet-4-20250514">
+                      Claude Sonnet 4
+                    </option>
                     <option value="claude-3-5-sonnet-20240620">
                       {translations?.Main?.models?.claude35}
                     </option>
